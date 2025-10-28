@@ -1,5 +1,6 @@
 import "dotenv/config";
 import { z, ZodError } from "zod";
+import { logger } from "@/logger/index.js";
 
 const EnvSchema = z.object({
   NODE_ENV: z
@@ -17,12 +18,16 @@ try {
   env = EnvSchema.parse(process.env);
 } catch (err) {
   if (err instanceof ZodError) {
-    console.error("Invalid environment configuration:");
+    logger.fatal("Invalid environment configuration");
     const tree = z.treeifyError(err);
 
     for (const [key, issues] of Object.entries(tree))
-      console.error(`${key}: ${issues.join(", ")}`);
-  } else console.error("Unexpected error during environment validation:", err);
+      logger.fatal({
+        field: key,
+        message: Array.isArray(issues) ? issues.join(", ") : String(issues),
+      });
+  } else
+    logger.fatal({ err }, "Unexpected error during environment validation");
 
   process.exit(1);
 }
