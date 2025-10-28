@@ -1,8 +1,10 @@
 import pino from "pino";
-import { env, isDev } from "@/config/env-validation";
+
+const defaultLevel = process.env.LOG_LEVEL || "info";
+const isDev = process.env.NODE_ENV !== "production";
 
 export const logger = pino({
-  level: env.LOG_LEVEL,
+  level: defaultLevel,
   transport: isDev
     ? { target: "pino-pretty", options: { singleLine: true, colorize: true } }
     : undefined,
