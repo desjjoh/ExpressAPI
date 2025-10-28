@@ -1,12 +1,14 @@
+import { env, isDev } from "@/config/env-validation";
 import express, { Request, Response } from "express";
 
 const app = express();
-const port = Number(process.env.PORT) || 3000;
+const port = env.PORT;
 
-app.get("/", (req: Request, res: Response) => {
-  res.send("Hello from TypeScript + ESM + Express!");
+app.get("/", (_: Request, res: Response) => {
+  res.send(`Hello from ${env.NODE_ENV} mode on port ${port}`);
 });
 
 app.listen(port, () => {
-  console.log(`✅ Server running at http://localhost:${port}`);
+  const mode = isDev ? "development" : "production";
+  console.log(`Server running in ${mode} mode at http://localhost:${port}`);
 });
