@@ -1,8 +1,13 @@
 import { env, isDev } from "@/config/env-validation";
+import { logger } from "@/logger/index";
+
 import express, { Request, Response } from "express";
+import pinoHttp from "pino-http";
 
 const app = express();
 const port = env.PORT;
+
+app.use(pinoHttp({ logger, quietReqLogger: !isDev }));
 
 app.get("/", (_: Request, res: Response) => {
   res.send(`Hello from ${env.NODE_ENV} mode on port ${port}`);
@@ -10,5 +15,8 @@ app.get("/", (_: Request, res: Response) => {
 
 app.listen(port, () => {
   const mode = isDev ? "development" : "production";
-  console.log(`Server running in ${mode} mode at http://localhost:${port}`);
+  logger.info(
+    { port: env.PORT },
+    `Server running in ${mode} mode at http://localhost:${port}`
+  );
 });
