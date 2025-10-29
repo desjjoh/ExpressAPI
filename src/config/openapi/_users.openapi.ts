@@ -8,11 +8,38 @@ export function registerUserPaths(registry: OpenAPIRegistry) {
   registry.register('UserId', UserIdSchema);
   registry.register('UpdateUser', UpdateUserSchema);
 
+  // POST /users
+  registry.registerPath({
+    method: 'post',
+    path: '/users',
+    tags: ['Users'],
+    summary: 'Create a new user',
+    request: {
+      body: {
+        content: {
+          'application/json': { schema: CreateUserSchema },
+        },
+      },
+    },
+    responses: {
+      201: {
+        description: 'User created successfully',
+        content: {
+          'application/json': {
+            schema: { $ref: '#/components/schemas/User' },
+          },
+        },
+      },
+      400: { description: 'Validation error' },
+    },
+  });
+
   // GET /users
   registry.registerPath({
     method: 'get',
     path: '/users',
     tags: ['Users'],
+    summary: 'Get all users',
     responses: {
       200: {
         description: 'List of users',
@@ -28,36 +55,12 @@ export function registerUserPaths(registry: OpenAPIRegistry) {
     },
   });
 
-  // POST /users
-  registry.registerPath({
-    method: 'post',
-    path: '/users',
-    tags: ['Users'],
-    request: {
-      body: {
-        content: {
-          'application/json': { schema: CreateUserSchema },
-        },
-      },
-    },
-    responses: {
-      201: {
-        description: 'User created',
-        content: {
-          'application/json': {
-            schema: { $ref: '#/components/schemas/User' },
-          },
-        },
-      },
-    },
-  });
-
   // GET /users/{id}
   registry.registerPath({
     method: 'get',
     path: '/users/{id}',
     tags: ['Users'],
-    summary: 'Get a single user',
+    summary: 'Get a single user by ID',
     parameters: [
       {
         name: 'id',
@@ -84,13 +87,13 @@ export function registerUserPaths(registry: OpenAPIRegistry) {
     method: 'put',
     path: '/users/{id}',
     tags: ['Users'],
-    summary: 'Update a single user',
+    summary: 'Update a user',
     parameters: [
       {
         name: 'id',
         in: 'path',
         required: true,
-        schema: { type: 'integer', example: 1 },
+        schema: { $ref: '#/components/schemas/UserId' },
       },
     ],
     request: {
@@ -118,13 +121,13 @@ export function registerUserPaths(registry: OpenAPIRegistry) {
     method: 'delete',
     path: '/users/{id}',
     tags: ['Users'],
-    summary: 'Delete a single user',
+    summary: 'Delete a user by ID',
     parameters: [
       {
         name: 'id',
         in: 'path',
         required: true,
-        schema: { type: 'integer', example: 1 },
+        schema: { $ref: '#/components/schemas/UserId' },
       },
     ],
     responses: {
