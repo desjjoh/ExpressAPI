@@ -1,9 +1,10 @@
-import { ZodError, ZodTypeAny } from 'zod';
-import { Request, Response, NextFunction } from 'express';
+import { ZodError } from 'zod';
+import type { ZodObject } from 'zod';
+import type { Request, Response, NextFunction } from 'express';
 import { BadRequestError } from '@/utils/http-error';
 
 export const validate =
-  (schema: ZodTypeAny) => (req: Request, res: Response, next: NextFunction) => {
+  (schema: ZodObject) => (req: Request, _res: Response, next: NextFunction) => {
     try {
       const data = schema.parse(req.body);
       req.body = data;

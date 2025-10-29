@@ -1,0 +1,14 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: quickapi-express
+    ports:
+      - '3000:3000'
+    env_file:
+      - .env
+    volumes:
+      - ./prisma/dev.db:/app/prisma/dev.db
+    restart: unless-stopped
+    command: ['npm', 'start']
