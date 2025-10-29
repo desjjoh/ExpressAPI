@@ -7,13 +7,19 @@ export const UserSchema = z.object({
   id: z.number().int().openapi({ example: 1 }),
   name: z.string().openapi({ example: 'John Doe' }),
   email: z.email().openapi({ example: 'john@example.com' }),
-  createdAt: z.string().datetime().openapi({ example: '2025-10-29T14:30:00Z' }),
+  createdAt: z.iso.datetime().openapi({ example: '2025-10-29T14:30:00Z' }),
 });
 
 export const CreateUserSchema = UserSchema.pick({
   name: true,
   email: true,
 }).openapi('CreateUserInput');
+
+export const UpdateUserSchema = CreateUserSchema.partial()
+  .refine(data => Object.keys(data).length > 0, {
+    message: 'At least one field must be provided for update.',
+  })
+  .openapi('UpdateUserInput');
 
 export const UserResponseSchema = UserSchema.openapi('UserResponse');
 
