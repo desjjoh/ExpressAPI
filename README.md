@@ -138,7 +138,8 @@ All routes are automatically documented in Swagger using **Zod-to-OpenAPI**.
 
 ## 📄 License
 
-MIT — do whatever you want, just don’t blame the AI.
+MIT © 2025 Your Name  
+You’re free to use, modify, and distribute this project with attribution.
 
 ---
 
