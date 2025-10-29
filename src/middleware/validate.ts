@@ -1,28 +1,17 @@
-import { ZodError, z, type ZodTypeAny } from "zod";
-import type { Request, Response, NextFunction } from "express";
+import { ZodError, ZodTypeAny } from 'zod';
+import { Request, Response, NextFunction } from 'express';
+import { BadRequestError } from '@/utils/http-error';
 
-import { BadRequestError } from "@/utils/http-error.js";
-
-export function validate<
-  T extends ZodTypeAny,
-  K extends "body" | "query" | "params",
->(schema: T, source: K) {
-  return (
-    req: Request & Record<K, z.output<T>>,
-    _res: Response,
-    next: NextFunction,
-  ): void => {
+export const validate =
+  (schema: ZodTypeAny) => (req: Request, res: Response, next: NextFunction) => {
     try {
-      const parsed = schema.parse(req[source] as unknown as z.input<T>);
-      (req[source] as unknown) = parsed;
+      const data = schema.parse(req.body);
+      req.body = data;
       next();
     } catch (err) {
       if (err instanceof ZodError) {
-        const message = err.issues.map((issue) => issue.message).join(", ");
+        const message = err.issues.map(e => e.message).join(', ');
         next(new BadRequestError(`Validation failed: ${message}`));
-      } else {
-        next(err);
-      }
+      } else next(err);
     }
   };
-}

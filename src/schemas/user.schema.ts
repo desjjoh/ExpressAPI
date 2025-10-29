@@ -1,0 +1,21 @@
+import { z } from 'zod';
+import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
+
+extendZodWithOpenApi(z);
+
+export const UserSchema = z.object({
+  id: z.number().int().openapi({ example: 1 }),
+  name: z.string().openapi({ example: 'John Doe' }),
+  email: z.email().openapi({ example: 'john@example.com' }),
+  createdAt: z.string().datetime().openapi({ example: '2025-10-29T14:30:00Z' }),
+});
+
+export const CreateUserSchema = UserSchema.pick({
+  name: true,
+  email: true,
+}).openapi('CreateUserInput');
+
+export const UserResponseSchema = UserSchema.openapi('UserResponse');
+
+export type CreateUserInput = z.infer<typeof CreateUserSchema>;
+export type UserResponse = z.infer<typeof UserResponseSchema>;

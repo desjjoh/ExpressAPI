@@ -1,12 +1,11 @@
-import type { ErrorRequestHandler } from "express";
-import { HttpError } from "@/utils/http-error.js";
-import { logger } from "@/logger/index.js";
+import type { ErrorRequestHandler } from 'express';
+import { HttpError } from '@/utils/http-error.js';
+import { logger } from '@/logger/logger.js';
 
 export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   void next;
   const status = err instanceof HttpError ? err.status : 500;
-  const message =
-    err instanceof HttpError ? err.message : "Internal Server Error";
+  const message = err instanceof HttpError ? err.message : 'Internal Server Error';
 
   logger.error(
     {
@@ -15,7 +14,7 @@ export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
       url: req.originalUrl,
       requestId: res.locals.requestId,
     },
-    "Request failed",
+    'Request failed',
   );
 
   res.status(status).json({
